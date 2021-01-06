@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,18 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
+# SECRET_KEY = "xw0@ytc$42hv5lqp=gj+movwvb1l1n$&ro3i3comobtqljr0hq"
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'xw0@ytc$42hv5lqp=gj+movwvb1l1n$&ro3i3comobtqljr0hq')
+#SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-DEBUG = 'RENDER' not in os.environ
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+#DEBUG = 'RENDER' not in os.environ
 #DEBUG = True
 
 ALLOWED_HOSTS = []
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-   ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -91,11 +89,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-    #'default': dj_database_url.config(
-    #   # Feel free to alter this value to suit your needs.
-    #   default='postgresql://postgres:postgres@localhost:5432/mysite',
-    #   conn_max_age=600
-    #)
 }
 
 
@@ -132,17 +125,20 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Heroku: Update database configuration from $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+STATIC_ROOT = BASE_DIR / 'staticfiles'  #. os.path.join(BASE_DIR, 'staticfiles')
+
+# The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
 
-# Following settings only make sense on production and may break development environments.
-if not DEBUG:
-   # Tell Django to copy statics to the `staticfiles` directory
-   # in your application directory on Render.
-   STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-   # Turn on WhiteNoise storage backend that takes care of compressing static files
-   # and creating unique names for each version so they can safely be cached forever.
-   STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
