@@ -40,6 +40,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 TAILWIND_APP_NAME = 'pokersociale'
 
 INSTALLED_APPS = [
+#    'render.apps.RenderConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
