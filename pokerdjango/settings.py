@@ -31,7 +31,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 #DEBUG = 'RENDER' not in os.environ
 #DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [thawing-thicket-70109.herokuapp.com]
 
 # Application definition
 
